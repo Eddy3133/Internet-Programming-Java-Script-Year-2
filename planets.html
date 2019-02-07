@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<title>Planets</title>
+	<meta charset="utf-8">
+	
+	<style>
+		.planet {
+			border-radius:100px;
+			width:100px;
+			height:100px;
+			color:white;
+			
+		}
+		.planet.gasPlanet {
+			color:black;
+			opacity:0.3;
+		}
+		
+		.planet h1 {
+			font-size:12px;
+			text-align:center;
+		}
+
+		.planetClicked{
+			opacity:0.6;
+			color:white; 
+		}
+	</style>
+	
+<script>
+window.onload = init;
+
+function Planet(name, type, colour) {
+	this.planetName = name;
+	this.type = type;
+	this.colour = colour;
+	
+	this.displayName = function(){
+		return this.planetName;
+	}
+	
+	this.isAGasPlanet = function(){
+		return this.type === 'gas';
+	}
+}
+
+function init() {
+	var mars = new Planet('Mars', 'solid', '#ff0000');
+	var earth = new Planet('Earth', 'solid', '#0000ff');
+	var jupiter = new Planet('Jupiter', 'gas', '#ffff00');
+	
+var body = document.getElementsByTagName('body')[0];
+body.addEventListener('click', unselectPlanets);
+body.addEventListener('keydown', duplicatePlanetEvent);
+
+	addPlanetData('planet1', mars);
+	addPlanetData('planet2', earth);
+	addPlanetData('planet3', jupiter);
+
+}
+
+function addPlanetData(elementId, planet) {
+	var element = document.getElementById(elementId);
+	var header = document.createElement('h1');
+	if (planet.isAGasPlanet()) {
+		element.className += ' gasPlanet';
+	}
+	element.style.backgroundColor = planet.colour;
+	header.innerHTML = planet.displayName();
+	header.className = 'someHeader';
+	header.style.fontSize = '20px';
+	element.appendChild(header);
+
+	element.addEventListener('click', selectPlanet);
+}
+
+function duplicatePlanet(element, amount){
+
+var el;
+var clones = document.getElementById('clones');
+
+for(var i = 0; i < amount; i++) {
+
+	el = element.cloneNode(true);
+	el.classList.remove('planetClicked');
+	clones.appendChild(el);
+	}
+}
+
+
+function selectPlanet(evt){
+
+	unselectPlanets();
+
+	var planetSelected = evt.currentTarget;
+
+	evt.currentTarget.classList.add('planetClicked');
+
+	evt.stopPropagation();
+
+}
+
+function unselectPlanets(){
+
+	var elements = document.getElementByClassName('planetClicked');
+	for(var i = 0; i < elements.length; i++){
+		elements[i].classList.remove('planetClicked');
+	}
+	planetSelected = null;
+
+}
+
+function duplicatePlanetEvent(evt){
+	if(planetSelected !== null){
+		var amtToOup = parseInt(evt.key);
+		duplicatePlanet(planetSelected, amtToOup);
+	}
+}
+
+var planetSelected = null;
+
+
+</script>
+</head>
+<body>
+	<div id="planet1" class="planet"></div>
+	<div id="planet2" class="planet"></div>
+	<div id="planet3" class="planet"></div>
+
+	<div id="clones"> </div>
+</body>
+</html>
+
